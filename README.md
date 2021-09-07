@@ -2,16 +2,18 @@
 
 # Presentation
 
+> Also available as a part of my [SwiftUI+ Collection](https://benkau.com/packages.json) – just add it to Xcode 13+
+
 Provides a custom presentation modifier that provides more options including full screen presentations.
 
 ## Features
 
 Presentation allows the configuration of the following properties:
 
-- UIModalTransitionStyle
-- UIModalPresentationStyle
-- isModalInPresentation
-- Easy API for presenting SwiftUI from UIKit
+-   UIModalTransitionStyle
+-   UIModalPresentationStyle
+-   isModalInPresentation
+-   Easy API for presenting SwiftUI from UIKit
 
 ## Example
 
@@ -30,7 +32,7 @@ struct Presenting: View {
                 Text("Present Modal")
             }
             .present(isPresented: $present) { Presented() }
-            
+
             Button {
                 presentFullscreen = true
             } label: {
@@ -50,7 +52,7 @@ struct Presented: View {
             Text("Dismiss")
         }
     }
-} 
+}
 ```
 
 Present from UIKit with a convenient and familiar API:
@@ -61,7 +63,7 @@ controller.present(Presented(), animated: true)
 
 ## Installation
 
-The code is packaged as a framework. You can install manually (by copying the files in the `Sources` directory) or using Swift Package Manager (__preferred__)
+The code is packaged as a framework. You can install manually (by copying the files in the `Sources` directory) or using Swift Package Manager (**preferred**)
 
 To install using Swift Package Manager, add this to the `dependencies` section of your `Package.swift` file:
 
