@@ -1,6 +1,8 @@
 import SwiftUI
 import Combine
 
+#if os(iOS)
+
 extension View {
 
     /// Apply this modifier to customize the presentation
@@ -46,3 +48,5 @@ private extension PresentationView {
     }
 
 }
+
+#endif

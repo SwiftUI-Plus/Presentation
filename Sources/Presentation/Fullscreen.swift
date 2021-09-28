@@ -1,6 +1,8 @@
 import SwiftUI
 import Combine
 
+#if os(iOS)
+
 internal struct FullscreenView<Content: View>: UIViewControllerRepresentable {
 
     let isPresented: Binding<Bool>
@@ -62,3 +64,5 @@ private final class FullscreenWrapper<Content: View>: UIViewController {
     }
 
 }
+
+#endif

@@ -1,5 +1,7 @@
 import SwiftUI
 
+#if os(iOS)
+
 public extension UIViewController {
 
     /// Presents a SwiftUI view from this controller
@@ -57,3 +59,5 @@ private final class PresentationDelegate: NSObject, UIAdaptivePresentationContro
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { style }
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) { handler?() }
 }
+
+#endif

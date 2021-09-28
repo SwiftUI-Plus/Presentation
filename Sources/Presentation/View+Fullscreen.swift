@@ -1,5 +1,7 @@
 import SwiftUI
 
+#if os(iOS)
+
 public extension View {
 
     /// Behaves similarly to `fullScreenCover` but if works on iOS 13+.
@@ -46,3 +48,5 @@ public extension View {
     }
 
 }
+
+#endif

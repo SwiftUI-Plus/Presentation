@@ -7,6 +7,8 @@ public extension View {
     ///     @Environment(\.presentation) private var presentation
     ///     ...
     ///     presentation.wrappedValue.dismiss()
+    ///
+    /// - Note: `isModal` is currently ignored in macOS
     func present<Content>(
         isPresented: Binding<Bool>,
         isModal: Bool = false,
@@ -21,15 +23,19 @@ public extension View {
         return sheet(isPresented: isPresented, onDismiss: onDismiss) {
             content()
                 .environment(\.presentation, binding)
+                #if os(iOS)
                 .modalInPresentation(isModal)
+                #endif
         }
     }
 
-    /// Behaves similarly to `sheet` however this will always `dismiss` a sheet and never `pop` a navigation stack
+    /// Behaves similarly to `sheet` however this will always `dismiss` a sheet and never `pop` a navigation stack.
     ///
     ///     @Environment(\.presentation) private var presentation
     ///     ...
     ///     presentation.wrappedValue.dismiss()
+    ///
+    /// - Note: `isModal` is currently ignored in macOS
     func present<Item, Content>(
         item: Binding<Item?>,
         isModal: Bool = false,
@@ -44,7 +50,9 @@ public extension View {
         return sheet(item: item, onDismiss: onDismiss) { item in
             content(item)
                 .environment(\.presentation, binding)
+                #if os(iOS)
                 .modalInPresentation(isModal)
+                #endif
         }
     }
 
