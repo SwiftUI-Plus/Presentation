@@ -43,7 +43,6 @@ public extension UIViewController {
                 .environment(\.presentation, presentation)
         )
 
-        controller.preferredContentSize = controller.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         controller.isModalInPresentation = isModal
         controller.modalTransitionStyle = transition
         controller.modalPresentationStyle = style

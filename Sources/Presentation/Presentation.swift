@@ -13,7 +13,9 @@ public struct Presentation {
         _isPresented.wrappedValue
     }
 
-    /// Dismisses the current view. If the current view is not being presented, this function is a no-op
+    /// Dismisses the view if it is currently presented.
+    ///
+    /// If `isPresented` is false, `dismiss()` is a no-op.
     public mutating func dismiss() {
         _isPresented.wrappedValue = false
     }
