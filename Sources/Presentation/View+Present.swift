@@ -15,9 +15,20 @@ public extension View {
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View where Content: View {
-        let binding = Binding<Presentation>(
-            get: { Presentation(isPresented) },
-            set: { _, _ in }
+        let binding = Binding(
+            get: {
+                Presentation(
+                    _isPresented: isPresented,
+                    isModalInPresentation: isModal,
+                    transitionStyle: .coverVertical,
+                    presentationStyle: .pageSheet
+                )
+            },
+            set: {
+                if !$0.isPresented {
+                    isPresented.wrappedValue = false
+                }
+            }
         )
 
         return sheet(isPresented: isPresented, onDismiss: onDismiss) {
@@ -42,9 +53,25 @@ public extension View {
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content
     ) -> some View where Item: Identifiable, Content: View {
-        let binding = Binding<Presentation>(
-            get: { Presentation(.constant(item.wrappedValue != nil)) },
-            set: { _, _ in item.wrappedValue = nil }
+        let boolBinding = Binding(
+            get: { item.wrappedValue != nil },
+            set: { if !$0 { item.wrappedValue = nil } }
+        )
+
+        let binding = Binding(
+            get: {
+                Presentation(
+                    _isPresented: boolBinding,
+                    isModalInPresentation: isModal,
+                    transitionStyle: .coverVertical,
+                    presentationStyle: .pageSheet
+                )
+            },
+            set: {
+                if !$0.isPresented {
+                    boolBinding.wrappedValue = false
+                }
+            }
         )
 
         return sheet(item: item, onDismiss: onDismiss) { item in

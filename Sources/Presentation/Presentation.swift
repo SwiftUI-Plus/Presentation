@@ -2,29 +2,34 @@ import SwiftUI
 
 public struct Presentation {
 
-    private var _isPresented: Binding<Bool>
+    var _isPresented: Binding<Bool>
+
+    public var isModalInPresentation: Bool
+    public var transitionStyle: UIModalTransitionStyle
+    public var presentationStyle: UIModalPresentationStyle
 
     /// Indicates whether a view is currently presented.
     public var isPresented: Bool {
         _isPresented.wrappedValue
     }
 
-    /// Dismisses the view if it is currently presented.
-    ///
-    /// If `isPresented` is false, `dismiss()` is a no-op.
+    /// Dismisses the current view. If the current view is not being presented, this function is a no-op
     public mutating func dismiss() {
         _isPresented.wrappedValue = false
-    }
-
-    public init(_ isPresented: Binding<Bool>) {
-        _isPresented = isPresented
     }
 
 }
 
 public struct PresentationEnvironmentKey: EnvironmentKey {
     public static let defaultValue: Binding<Presentation> =
-        .constant(Presentation(.constant(false)))
+        .constant(
+            Presentation(
+                _isPresented: .constant(false),
+                isModalInPresentation: false,
+                transitionStyle: .coverVertical,
+                presentationStyle: .pageSheet
+            )
+        )
 }
 
 extension EnvironmentValues {

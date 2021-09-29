@@ -19,7 +19,12 @@ public extension UIViewController {
         var delegate: PresentationDelegate?
 
         let presentation = Binding<Presentation> {
-            Presentation(.constant(false))
+            Presentation(
+                _isPresented: .constant(false),
+                isModalInPresentation: isModal,
+                transitionStyle: transition,
+                presentationStyle: style
+            )
         } set: { _ in
             onDismiss?()
             self.dismiss(animated: true) {
@@ -34,12 +39,17 @@ public extension UIViewController {
         }
 
         let controller = UIHostingController(
-            rootView: rootView.environment(\.presentation, presentation)
+            rootView: rootView
+                .environment(\.presentation, presentation)
         )
 
+        controller.preferredContentSize = controller.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         controller.isModalInPresentation = isModal
         controller.modalTransitionStyle = transition
-        controller.view.backgroundColor = .clear
+        controller.modalPresentationStyle = style
+        controller.popoverPresentationController?.permittedArrowDirections = .any
+        controller.popoverPresentationController?.sourceView = view
+        controller.popoverPresentationController?.sourceRect = view.bounds
 
         delegate = PresentationDelegate()
         delegate?.style = style
@@ -49,11 +59,12 @@ public extension UIViewController {
         }
 
         controller.presentationController?.delegate = delegate
+
         return controller
     }
 }
 
-private final class PresentationDelegate: NSObject, UIAdaptivePresentationControllerDelegate, UIViewControllerTransitioningDelegate {
+private final class PresentationDelegate: NSObject, UIAdaptivePresentationControllerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
     var style: UIModalPresentationStyle = .pageSheet
     var handler: (() -> Void)?
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { style }

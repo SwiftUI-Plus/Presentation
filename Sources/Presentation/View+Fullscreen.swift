@@ -18,7 +18,29 @@ public extension View {
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View where Content: View {
-        background(FullscreenView(isPresented: isPresented, isModal: isModal, transition: transition, style: style, onDismiss: onDismiss, content: content))
+        let binding = Binding(
+            get: {
+                Presentation(
+                    _isPresented: isPresented,
+                    isModalInPresentation: isModal,
+                    transitionStyle: transition,
+                    presentationStyle: style
+                )
+            },
+            set: {
+                if !$0.isPresented {
+                    isPresented.wrappedValue = false
+                }
+            }
+        )
+
+        return background(
+            Presenter(
+                presentation: binding,
+                onDismiss: onDismiss,
+                content: content
+            )
+        )
     }
 
     /// Behaves similarly to `fullScreenCover` but if works on iOS 13+.
@@ -35,16 +57,34 @@ public extension View {
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content
     ) -> some View where Item: Identifiable, Content: View {
-        let binding = Binding(
+        let boolBinding = Binding(
             get: { item.wrappedValue != nil },
-            set: { value, _ in
-                if !value { item.wrappedValue = nil }
+            set: { if !$0 { item.wrappedValue = nil } }
+        )
+
+        let binding = Binding(
+            get: {
+                Presentation(
+                    _isPresented: boolBinding,
+                    isModalInPresentation: isModal,
+                    transitionStyle: transition,
+                    presentationStyle: style
+                )
+            },
+            set: {
+                if !$0.isPresented {
+                    boolBinding.wrappedValue = false
+                }
             }
         )
 
-        return background(FullscreenView(isPresented: binding, isModal: isModal, transition: transition, style: style, onDismiss: onDismiss, content: {
-            content(item.wrappedValue!)
-        }))
+        return background(
+            Presenter(
+                presentation: binding,
+                onDismiss: onDismiss,
+                content: { content(item.wrappedValue!) }
+            )
+        )
     }
 
 }
