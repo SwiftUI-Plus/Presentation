@@ -18,7 +18,7 @@ public extension View {
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View where Content: View {
-        background(FullscreenView(isPresented: isPresented, isModal: isModal, transition: transition, style: style, content: content))
+        background(FullscreenView(isPresented: isPresented, isModal: isModal, transition: transition, style: style, onDismiss: onDismiss, content: content))
     }
 
     /// Behaves similarly to `fullScreenCover` but if works on iOS 13+.
@@ -42,7 +42,7 @@ public extension View {
             }
         )
 
-        return background(FullscreenView(isPresented: binding, isModal: isModal, transition: transition, style: style, content: {
+        return background(FullscreenView(isPresented: binding, isModal: isModal, transition: transition, style: style, onDismiss: onDismiss, content: {
             content(item.wrappedValue!)
         }))
     }
