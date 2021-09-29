@@ -2,7 +2,11 @@ import SwiftUI
 
 public struct Presentation {
 
-    private var _isPresented: Binding<Bool>
+    var _isPresented: Binding<Bool>
+
+    public var isModalInPresentation: Bool
+    public var transitionStyle: UIModalTransitionStyle
+    public var presentationStyle: UIModalPresentationStyle
 
     /// Indicates whether a view is currently presented.
     public var isPresented: Bool {
@@ -16,15 +20,18 @@ public struct Presentation {
         _isPresented.wrappedValue = false
     }
 
-    public init(_ isPresented: Binding<Bool>) {
-        _isPresented = isPresented
-    }
-
 }
 
 public struct PresentationEnvironmentKey: EnvironmentKey {
     public static let defaultValue: Binding<Presentation> =
-        .constant(Presentation(.constant(false)))
+        .constant(
+            Presentation(
+                _isPresented: .constant(false),
+                isModalInPresentation: false,
+                transitionStyle: .coverVertical,
+                presentationStyle: .pageSheet
+            )
+        )
 }
 
 extension EnvironmentValues {
