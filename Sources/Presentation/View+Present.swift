@@ -17,12 +17,18 @@ public extension View {
     ) -> some View where Content: View {
         let binding = Binding(
             get: {
+                #if os(iOS)
                 Presentation(
                     _isPresented: isPresented,
                     isModalInPresentation: isModal,
                     transitionStyle: .coverVertical,
                     presentationStyle: .pageSheet
                 )
+                #else
+                Presentation(
+                    _isPresented: isPresented
+                )
+                #endif
             },
             set: {
                 if !$0.isPresented {
@@ -60,12 +66,18 @@ public extension View {
 
         let binding = Binding(
             get: {
+                #if os(iOS)
                 Presentation(
                     _isPresented: boolBinding,
                     isModalInPresentation: isModal,
                     transitionStyle: .coverVertical,
                     presentationStyle: .pageSheet
                 )
+                #else
+                Presentation(
+                    _isPresented: boolBinding
+                )
+                #endif
             },
             set: {
                 if !$0.isPresented {

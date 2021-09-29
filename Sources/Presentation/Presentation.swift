@@ -4,9 +4,11 @@ public struct Presentation {
 
     var _isPresented: Binding<Bool>
 
+    #if os(iOS)
     public var isModalInPresentation: Bool
     public var transitionStyle: UIModalTransitionStyle
     public var presentationStyle: UIModalPresentationStyle
+    #endif
 
     /// Indicates whether a view is currently presented.
     public var isPresented: Bool {
@@ -23,6 +25,7 @@ public struct Presentation {
 }
 
 public struct PresentationEnvironmentKey: EnvironmentKey {
+#if os(iOS)
     public static let defaultValue: Binding<Presentation> =
         .constant(
             Presentation(
@@ -32,6 +35,14 @@ public struct PresentationEnvironmentKey: EnvironmentKey {
                 presentationStyle: .pageSheet
             )
         )
+#else
+    public static let defaultValue: Binding<Presentation> =
+        .constant(
+            Presentation(
+                _isPresented: .constant(false)
+            )
+        )
+#endif
 }
 
 extension EnvironmentValues {
