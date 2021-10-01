@@ -66,6 +66,7 @@ extension Presenter {
                 )
             )
 
+            controller.view.backgroundColor = .clear
             controller.isModalInPresentation = parent.presentation.isModalInPresentation
             controller.modalTransitionStyle = parent.presentation.transitionStyle
             controller.modalPresentationStyle = parent.presentation.presentationStyle
