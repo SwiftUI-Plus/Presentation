@@ -58,7 +58,7 @@ struct Presented: View {
 Present from UIKit with a convenient and familiar API:
 
 ```swift
-controller.present(Presented(), animated: true)
+controller.present(Presented())
 ```
 
 ## Installation
