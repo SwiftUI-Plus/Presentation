@@ -6,6 +6,8 @@ import SafariServices
 struct Presenter<Content: View>: UIViewRepresentable {
 
     @Binding var presentation: Presentation
+    var shouldDismiss: (() -> Bool)? = nil
+    var onDismissAttempt: (() -> Void)? = nil
     var onDismiss: (() -> Void)? = nil
     var content: () -> Content
 
@@ -19,6 +21,18 @@ struct Presenter<Content: View>: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) {
         context.coordinator.parent = self
+    }
+
+    func disableInteractiveDismiss(_ handler: @escaping () -> Bool) -> Presenter<Content> {
+        var view = self
+        view.shouldDismiss = handler
+        return view
+    }
+
+    func onDismissAttempt(_ handler: @escaping () -> Void) -> Presenter<Content> {
+        var view = self
+        view.onDismissAttempt = handler
+        return view
     }
 }
 
@@ -67,7 +81,7 @@ extension Presenter {
             )
 
             controller.view.backgroundColor = .clear
-            controller.isModalInPresentation = parent.presentation.isModalInPresentation
+//            controller.isModalInPresentation = parent.presentation.isModalInPresentation
             controller.modalTransitionStyle = parent.presentation.transitionStyle
             controller.modalPresentationStyle = parent.presentation.presentationStyle
             controller.presentationController?.delegate = self
@@ -115,6 +129,14 @@ extension Presenter {
         func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
             resetItemBinding()
             parent.onDismiss?()
+        }
+
+        func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+            parent.shouldDismiss?() ?? !parent.presentation.isModalInPresentation
+        }
+
+        func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+            parent.onDismissAttempt?()
         }
 
     }

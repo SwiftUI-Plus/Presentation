@@ -63,7 +63,7 @@ public extension UIViewController {
     }
 }
 
-private final class PresentationDelegate: NSObject, UIAdaptivePresentationControllerDelegate, UIViewControllerTransitioningDelegate, UIPopoverPresentationControllerDelegate {
+private final class PresentationDelegate: NSObject, UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
     var style: UIModalPresentationStyle = .pageSheet
     var handler: (() -> Void)?
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { style }

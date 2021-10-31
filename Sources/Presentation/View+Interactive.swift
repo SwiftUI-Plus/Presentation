@@ -4,7 +4,7 @@ import SwiftUI
 
 public extension View {
 
-    /// Behaves similarly to `fullScreenCover` but if works on iOS 13+.
+    /// Behaves similarly to `sheet` and `fullScreenCover` but if works on iOS 13+.
     /// You _must_ use `.presentation` __not__ `presentationMode` when dismissing this view
     ///
     ///     @Environment(\.presentation) private var presentation
@@ -12,17 +12,18 @@ public extension View {
     ///     presentation.wrappedValue.dismiss()
     func present<Content>(
         isPresented: Binding<Bool>,
-        isModal: Bool = false,
         transition: UIModalTransitionStyle = .coverVertical,
         style: UIModalPresentationStyle,
-        onDismiss: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder _ content: @escaping () -> Content,
+        shouldDismiss: (() -> Bool)? = nil,
+        onDismissAttempt: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
     ) -> some View where Content: View {
         let binding = Binding(
             get: {
                 Presentation(
                     _isPresented: isPresented,
-                    isModalInPresentation: isModal,
+                    isModalInPresentation: true,
                     transitionStyle: transition,
                     presentationStyle: style
                 )
@@ -40,6 +41,8 @@ public extension View {
                 onDismiss: onDismiss,
                 content: content
             )
+            .disableInteractiveDismiss({ shouldDismiss?() ?? true })
+            .onDismissAttempt({ onDismissAttempt?() })
         )
     }
 
@@ -51,11 +54,12 @@ public extension View {
     ///     presentation.wrappedValue.dismiss()
     func present<Item, Content>(
         item: Binding<Item?>,
-        isModal: Bool = false,
         transition: UIModalTransitionStyle = .coverVertical,
         style: UIModalPresentationStyle,
-        onDismiss: (() -> Void)? = nil,
-        @ViewBuilder content: @escaping (Item) -> Content
+        @ViewBuilder _ content: @escaping (Item) -> Content,
+        shouldDismiss: (() -> Bool)? = nil,
+        onDismissAttempt: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
     ) -> some View where Item: Identifiable, Content: View {
         let boolBinding = Binding(
             get: { item.wrappedValue != nil },
@@ -66,7 +70,7 @@ public extension View {
             get: {
                 Presentation(
                     _isPresented: boolBinding,
-                    isModalInPresentation: isModal,
+                    isModalInPresentation: true,
                     transitionStyle: transition,
                     presentationStyle: style
                 )
@@ -84,6 +88,8 @@ public extension View {
                 onDismiss: onDismiss,
                 content: { content(item.wrappedValue!) }
             )
+            .disableInteractiveDismiss({ shouldDismiss?() ?? true })
+            .onDismissAttempt({ onDismissAttempt?() })
         )
     }
 
